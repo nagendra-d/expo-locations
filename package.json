@@ -1,5 +1,5 @@
 {
-  "name": "expo-location",
+  "name": "expo-locations",
   "version": "8.0.0",
   "description": "Allows reading geolocation information from the device. Your app can poll for the current location or subscribe to location update events.",
   "main": "build/Location.js",
