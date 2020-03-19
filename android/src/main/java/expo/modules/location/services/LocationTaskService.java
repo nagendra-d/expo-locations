@@ -16,19 +16,14 @@ import android.os.Bundle;
 import android.os.IBinder;
 import androidx.annotation.Nullable;
 import android.util.Log;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 
-
-public class LocationTaskService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class LocationTaskService extends Service {
   private static final String TAG = "LocationTaskService";
   private static int sServiceId = 481756;
 
   private String mChannelId;
   private Context mParentContext;
   private int mServiceId = sServiceId++;
-  public GoogleApiClient mGoogleApiClient;
   private final IBinder mBinder = new ServiceBinder();
 
   public class ServiceBinder extends Binder {
@@ -52,9 +47,6 @@ public class LocationTaskService extends Service implements GoogleApiClient.Conn
     if (extras != null) {
       mChannelId = extras.getString("appId") + ":" + extras.getString("taskName");
     }
-    
-    if (!mGoogleApiClient.isConnected())
-      mGoogleApiClient.connect();
 
     return START_STICKY;
   }
@@ -73,17 +65,7 @@ public class LocationTaskService extends Service implements GoogleApiClient.Conn
   public void startForeground(Bundle serviceOptions) {
     Notification notification = buildServiceNotification(serviceOptions);
     startForeground(mServiceId, notification);
-    buildGoogleApiClient();
   }
-  
-  protected synchronized void buildGoogleApiClient() {
-    mGoogleApiClient = new GoogleApiClient.Builder(this)
-            .addOnConnectionFailedListener(this)
-            .addConnectionCallbacks(this)
-            .addApi(LocationServices.API)
-            .build();
-  }
-
 
   //region private
 

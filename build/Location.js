@@ -1,6 +1,6 @@
 import { EventEmitter, Platform, CodedError } from '@unimodules/core';
-import invariant from 'invariant';
 import { PermissionStatus, } from 'unimodules-permissions-interface';
+import invariant from 'invariant';
 import ExpoLocation from './ExpoLocation';
 const LocationEventEmitter = new EventEmitter(ExpoLocation);
 export { PermissionStatus };
@@ -42,7 +42,7 @@ function _getNextWatchId() {
 function _getCurrentWatchId() {
     return nextWatchId;
 }
-const watchCallbacks = {};
+let watchCallbacks = {};
 let deviceEventSubscription;
 let headingEventSub;
 let googleApiKey;
@@ -86,8 +86,9 @@ export async function getHeadingAsync() {
             }
             else {
                 let done = false;
+                let subscription;
                 let tries = 0;
-                const subscription = await watchHeadingAsync((heading) => {
+                subscription = await watchHeadingAsync((heading) => {
                     if (!done) {
                         if (heading.accuracy > 1 || tries > 5) {
                             subscription.remove();
@@ -199,7 +200,7 @@ async function _googleGeocodeAsync(address) {
     }
     assertGeocodeResults(resultObject);
     return resultObject.results.map(result => {
-        const location = result.geometry.location;
+        let location = result.geometry.location;
         // TODO: This is missing a lot of props
         return {
             latitude: location.lat,
